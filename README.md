@@ -1,7 +1,7 @@
 # Pytorch0.4.1 with CUDA 11 and cudnn 8.2
 This is a repo for setup Pytorch0.4.1 with CUDA 11 and cudnn 8.2
 
-1. Download CUDA 11 and cudnn 8.2 from Nvidia. I use `cuda_11.3.0_465.19.01_linux.run` and `cudnn-11.3-linux-x64-v8.2.0.53.tgz`. Set up your CUDA_HOME and LD_LIBRARY_PATH in your `.bashrc`.
+1. Download CUDA 11.1 and cudnn 8.0.5 from Nvidia. I use `cuda_11.1.0_455.23.05_linux.run` and `cudnn-11.1-linux-x64-v8.0.5.39.tgz`. Set up your CUDA_HOME and LD_LIBRARY_PATH in your `.bashrc`.
 
 2. Install dependencies from conda.
 
