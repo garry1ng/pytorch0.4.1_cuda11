@@ -496,16 +496,39 @@ struct algorithm_search<cudnnConvolutionFwdAlgo_t> {
     const ConvolutionArgs& args,
     algo_t* algo)
   {
-    cudnnConvolutionFwdPreference_t pref = CUDNN_CONVOLUTION_FWD_PREFER_FASTEST;
-    AT_CUDNN_CHECK(cudnnGetConvolutionForwardAlgorithm(
+    // cudnnConvolutionFwdPreference_t pref = CUDNN_CONVOLUTION_FWD_PREFER_FASTEST;
+    // AT_CUDNN_CHECK(cudnnGetConvolutionForwardAlgorithm(
+    //     args.handle,
+    //     args.idesc.desc(),
+    //     args.wdesc.desc(),
+    //     args.cdesc.desc(),
+    //     args.odesc.desc(),
+    //     pref,
+    //     0,
+    //     algo));
+    static const algo_t algos[] = {
+         CUDNN_CONVOLUTION_FWD_ALGO_GEMM,
+         CUDNN_CONVOLUTION_FWD_ALGO_FFT,
+         CUDNN_CONVOLUTION_FWD_ALGO_FFT_TILING,
+         CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_GEMM,
+         CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_PRECOMP_GEMM,
+         CUDNN_CONVOLUTION_FWD_ALGO_DIRECT,
+         CUDNN_CONVOLUTION_FWD_ALGO_WINOGRAD,
+         CUDNN_CONVOLUTION_FWD_ALGO_WINOGRAD_NONFUSED,
+    };
+    static constexpr int num_algos = CUDNN_CONVOLUTION_FWD_ALGO_COUNT;
+    int perf_count;
+    std::unique_ptr<perf_t[]> perf_results(new perf_t[num_algos]);
+
+    AT_CUDNN_CHECK(cudnnGetConvolutionForwardAlgorithm_v7(
         args.handle,
         args.idesc.desc(),
         args.wdesc.desc(),
         args.cdesc.desc(),
         args.odesc.desc(),
-        pref,
-        0,
-        algo));
+        num_algos,
+        &perf_count,
+        perf_results.get()));
   }
 
   static void getWorkspaceSize(
@@ -562,15 +585,37 @@ struct algorithm_search<cudnnConvolutionBwdDataAlgo_t> {
   }
 
   static void getAlgorithm(const ConvolutionArgs& args, algo_t* algo) {
-    AT_CUDNN_CHECK(cudnnGetConvolutionBackwardDataAlgorithm(
+    // AT_CUDNN_CHECK(cudnnGetConvolutionBackwardDataAlgorithm(
+    //     args.handle,
+    //     args.wdesc.desc(),
+    //     args.odesc.desc(),
+    //     args.cdesc.desc(),
+    //     args.idesc.desc(),
+    //     CUDNN_CONVOLUTION_BWD_DATA_PREFER_FASTEST,
+    //     0,
+    //     algo));
+    static const algo_t algos[] = {
+        CUDNN_CONVOLUTION_BWD_DATA_ALGO_0,
+        CUDNN_CONVOLUTION_BWD_DATA_ALGO_1,
+        CUDNN_CONVOLUTION_BWD_DATA_ALGO_FFT,
+        CUDNN_CONVOLUTION_BWD_DATA_ALGO_FFT_TILING,
+        CUDNN_CONVOLUTION_BWD_DATA_ALGO_WINOGRAD,
+        CUDNN_CONVOLUTION_BWD_DATA_ALGO_WINOGRAD_NONFUSED
+    };
+
+    static constexpr int num_algos = CUDNN_CONVOLUTION_BWD_DATA_ALGO_COUNT;
+    int perf_count;
+    std::unique_ptr<perf_t[]> perf_results(new perf_t[num_algos]);
+
+    AT_CUDNN_CHECK(cudnnGetConvolutionBackwardDataAlgorithm_v7(
         args.handle,
         args.wdesc.desc(),
         args.odesc.desc(),
         args.cdesc.desc(),
         args.idesc.desc(),
-        CUDNN_CONVOLUTION_BWD_DATA_PREFER_FASTEST,
-        0,
-        algo));
+        num_algos,
+        &perf_count,
+        perf_results.get()));
   }
 
   static void getWorkspaceSize(
@@ -632,15 +677,27 @@ struct algorithm_search<cudnnConvolutionBwdFilterAlgo_t> {
   }
 
   static void getAlgorithm(const ConvolutionArgs& args, algo_t* algo) {
-    AT_CUDNN_CHECK(cudnnGetConvolutionBackwardFilterAlgorithm(
+    static const algo_t algos[] = {
+        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0,
+        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_1,
+        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_FFT,
+        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_3,
+        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_WINOGRAD_NONFUSED,
+        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_FFT_TILING,
+    };
+    
+    static constexpr int num_algos = CUDNN_CONVOLUTION_BWD_FILTER_ALGO_COUNT - 1;
+    std::unique_ptr<perf_t[]> perf_results(new perf_t[num_algos]);
+    int perf_count;
+    AT_CUDNN_CHECK(cudnnGetConvolutionBackwardFilterAlgorithm_v7(
         args.handle,
         args.idesc.desc(),
         args.odesc.desc(),
         args.cdesc.desc(),
         args.wdesc.desc(),
-        CUDNN_CONVOLUTION_BWD_FILTER_PREFER_FASTEST,
-        0,
-        algo)
+        num_algos,
+        &perf_count,
+        perf_results.get())
     );
   }
 

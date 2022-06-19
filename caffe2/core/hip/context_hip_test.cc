@@ -81,7 +81,7 @@ TEST(HIPContextTest, MemoryPoolAllocateDealloc)
         EXPECT_NE(allocated, nullptr);
         hipPointerAttribute_t attr;
         HIP_ENFORCE(hipPointerGetAttributes(&attr, allocated.get()));
-        EXPECT_EQ(attr.memoryType, hipMemoryTypeDevice);
+        EXPECT_EQ(attr.type, hipMemoryTypeDevice);
         EXPECT_EQ(attr.device, i);
         void* prev_allocated = allocated.get();
         allocated.reset();

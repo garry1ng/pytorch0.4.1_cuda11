@@ -1067,7 +1067,7 @@ def main():
     # Open YAML file with disable information.
     if args.yaml_settings != "":
         with openf(args.yaml_settings, "r") as f:
-            yaml_data = yaml.load(f)
+            yaml_data = yaml.safe_load(f)
 
         # Disable functions in certain files according to YAML description
         for disable_info in yaml_data["disabled_functions"]:
