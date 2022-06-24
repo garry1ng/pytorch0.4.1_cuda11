@@ -8,7 +8,7 @@ This is a repo for setup Pytorch0.4.1 with CUDA 11 and cudnn 8.2
 ```bash
 conda create -n "pytorch0.4" python=3.7
 conda activate "pytorch0.4"
-conda install numpy pyyaml mkl mkl-include setuptools cmake cffi typing
+conda install numpy pyyaml mkl=2021.4.0 mkl-include setuptools cmake cffi typing
 ```
 
 3. Recursively Clone Pytorch0.4.1 from `https://github.com/garry1ng/pytorch0.4.1_cuda11.git`. Make sure the submodules except nervanagpu are also included. 
